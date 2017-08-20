@@ -10,7 +10,8 @@
     android:layout_marginRight="8dp"
     android:layout_marginTop="4dp"
     card_view:cardCornerRadius="4dp"
-
+    android:foreground="?attr/selectableItemBackground"
+    app:cardElevation="4dp"
 
     >
 
@@ -56,7 +57,7 @@
             <ImageView
                 android:id="@+id/imageViewCardWeatherIcon"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="120dp"
                 android:layout_weight="40"
                 android:src="@mipmap/ic_clear" />
 
