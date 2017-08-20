@@ -1,29 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:id="@+id/cardViewWeatherCard"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="4dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    android:layout_marginTop="4dp"
+    card_view:cardCornerRadius="4dp"
 
-    <android.support.v7.widget.CardView
+
+    >
+
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:background="#9e5a5a"
-        app:cardCornerRadius="4dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="16dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_height="match_parent">
 
-        >
         <TextView
+            android:id="@+id/textViewCardCityName"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/colorAccent"/>
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
+            android:text="San Francisco, US"
+            android:textSize="30sp"
+            android:textStyle=""
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </android.support.v7.widget.CardView>
+
+        <TextView
+            android:id="@+id/textViewCardWeatherDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:text="Partly Cloudy"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewCardCityName" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewCardWeatherDescription">
+
+            <ImageView
+                android:id="@+id/imageViewCardWeatherIcon"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="40"
+                android:src="@mipmap/ic_clear" />
+
+            <TextView
+                android:id="@+id/textViewCardCurrentTemp"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="8dp"
+                android:layout_weight="40"
+                android:gravity="center"
+                android:text="99°"
+                android:textSize="80sp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="20"
+                android:layout_marginRight="16dp"
+                android:orientation="vertical"
+                >
+                <TextView
+                    android:id="@+id/textViewCardMaxTemp"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:gravity="center_horizontal|bottom"
+                    android:layout_weight="5"
+                    android:text="45°"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    />
+                <TextView
+                    android:id="@+id/textViewCardMinTemp"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="5"
+                    android:gravity="center_horizontal"
+                    android:textSize="18sp"
+                    android:text="21°"/>
+            </LinearLayout>
 
 
+        </LinearLayout>
 
 
-</android.support.constraint.ConstraintLayout>
+    </android.support.constraint.ConstraintLayout>
+
+
+</android.support.v7.widget.CardView
+
+    >

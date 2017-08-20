@@ -4,15 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.martinruiz.myapplication.MainActivity">
+    tools:context="com.example.martinruiz.myapplication.activities.MainActivity">
 
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view_weather"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefresh"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="vertical"/>
+        android:layout_height="match_parent">
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerViewWeatherCards"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical"
+            android:background="@color/cardview_light_background"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:layout_width="wrap_content"
@@ -24,7 +30,8 @@
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:fabSize="normal"/>
+        app:fabSize="normal"
+        />
 
 
 
