@@ -11,7 +11,7 @@
     android:layout_marginTop="4dp"
     card_view:cardCornerRadius="4dp"
     android:foreground="?attr/selectableItemBackground"
-    app:cardElevation="4dp"
+    app:cardElevation="2dp"
 
     >
 
