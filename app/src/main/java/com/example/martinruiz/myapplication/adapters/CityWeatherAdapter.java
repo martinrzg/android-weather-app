@@ -14,12 +14,14 @@ import com.example.martinruiz.myapplication.R;
 import com.example.martinruiz.myapplication.activities.MainActivity;
 import com.example.martinruiz.myapplication.interfaces.onSwipeListener;
 import com.example.martinruiz.myapplication.models.CityWeather;
+import com.example.martinruiz.myapplication.utils.IconProvider;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.internal.Util;
 
 /**
  * Created by MartinRuiz on 8/19/2017.
@@ -94,7 +96,8 @@ public class CityWeatherAdapter extends RecyclerView.Adapter<CityWeatherAdapter.
             textViewCurrentTemp.setText((int) cityWeather.getWeeklyWeather().get(0).getTemp().getDay()+"°");
             textViewMaxTemp.setText((int) cityWeather.getWeeklyWeather().get(0).getTemp().getMax()+"°");
             textViewMinTemp.setText((int) cityWeather.getWeeklyWeather().get(0).getTemp().getMin()+"°");
-            Picasso.with(activity).load(R.mipmap.ic_clear).into(imageViewWeatherIcon);
+            String weatherDescription = cityWeather.getWeeklyWeather().get(0).getWeatherDetails().get(0).getShotDescription();
+            Picasso.with(activity).load(IconProvider.getImageIcon(weatherDescription)).into(imageViewWeatherIcon);
             cardViewWeather.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

@@ -12,32 +12,33 @@ public class IconProvider {
         int weatherIcon ;
         switch(weatherDescription) {
             case "Thunderstorm":
-                weatherIcon = thunderstorm;
+                weatherIcon = R.mipmap.ic_atmosphere;
                 break;
             case "Drizzle":
-                weatherIcon = drizzle;
+                weatherIcon = R.mipmap.ic_drizzle;
                 break;
             case "Rain":
-                weatherIcon = rain;
+                weatherIcon = R.mipmap.ic_rain;
                 break;
             case "Snow":
-                weatherIcon = snow;
-                break
+                weatherIcon = R.mipmap.ic_snow;
+                break;
             case "Atmosphere":
-                weatherIcon = atmosphere;
+                weatherIcon = R.mipmap.ic_atmosphere;
                 break;
             case "Clear":
-                weatherIcon = clear;
-                break
+                weatherIcon = R.mipmap.ic_clear;
+                break;
             case "Clouds":
-                weatherIcon = clouds;
+                weatherIcon = R.mipmap.ic_cloudy;
                 break;
             case "Extreme":
-                weatherIcon = extreme;
+                weatherIcon = R.mipmap.ic_extreme;
                 break;
             default:
-                weatherIcon = defaultIcon;
+                weatherIcon = R.mipmap.ic_launcher;
         }
+        return weatherIcon;
 
     }
 
