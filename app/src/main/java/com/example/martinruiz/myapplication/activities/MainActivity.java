@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -36,6 +37,7 @@ import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -46,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.swipeRefresh) SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.fabAddCity) FloatingActionButton fabAddCity ;
     private WeatherServices weatherServices;
+    private MaterialTapTargetPrompt mFabPrompt;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +58,10 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         ButterKnife.bind(this);
         cities = getCities();
+        if(cities.size() == 0){
+            showFabPrompt();
+        }
+
         weatherServices = API.getApi().create(WeatherServices.class);
 
         layoutManager = new LinearLayoutManager(this);
@@ -90,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         fabAddCity.setOnClickListener(view -> {
             showAlertAddCity("Add city","Type the city you want to add");
         });
@@ -103,9 +112,35 @@ public class MainActivity extends AppCompatActivity {
         mItemTouchHelper.attachToRecyclerView(recyclerView);
 
     }
+    //Still needs some fix
     public void recyclerScrollTo(int pos){
         recyclerView.scrollToPosition(pos);
     }
+    public void showFabPrompt()
+    {
+        if (mFabPrompt != null)
+        {
+            return;
+        }
+        mFabPrompt = new MaterialTapTargetPrompt.Builder(MainActivity.this)
+                .setTarget(findViewById(R.id.fabAddCity))
+                .setFocalPadding(R.dimen.dp40)
+                .setPrimaryText("Add your first City")
+                .setSecondaryText("Tap the add button and add your favorites cities to get weather updates")
+                .setBackButtonDismissEnabled(true)
+                .setAnimationInterpolator(new FastOutSlowInInterpolator())
+                .setPromptStateChangeListener((prompt, state) -> {
+                    if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED || state == MaterialTapTargetPrompt.STATE_DISMISSING )
+                    {
+                        mFabPrompt = null;
+                        //Do something such as storing a value so that this prompt is never shown again
+                    }
+                })
+                .create();
+        mFabPrompt.show();
+    }
+
+
 
     private void refreshData() {
         for (int i = 0; i < cities.size(); i++) {
