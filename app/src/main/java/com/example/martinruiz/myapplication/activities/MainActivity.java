@@ -1,5 +1,6 @@
 package com.example.martinruiz.myapplication.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -23,7 +24,9 @@ import com.example.martinruiz.myapplication.API.API;
 import com.example.martinruiz.myapplication.API.APIServices.WeatherServices;
 import com.example.martinruiz.myapplication.R;
 import com.example.martinruiz.myapplication.adapters.CityWeatherAdapter;
+import com.example.martinruiz.myapplication.interfaces.onSwipeListener;
 import com.example.martinruiz.myapplication.models.CityWeather;
+import com.example.martinruiz.myapplication.utils.ItemTouchHelperCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,8 +47,6 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.fabAddCity) FloatingActionButton fabAddCity ;
     private WeatherServices weatherServices;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         ButterKnife.bind(this);
         cities = getCities();
+        weatherServices = API.getApi().create(WeatherServices.class);
+
         layoutManager = new LinearLayoutManager(this);
         adapter = new CityWeatherAdapter(cities, R.layout.weather_card, this, new CityWeatherAdapter.OnItemClickListener() {
             @Override
@@ -87,17 +90,32 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        fabAddCity.setOnClickListener(new View.OnClickListener() {
-            String cityToAdd="";
-            @Override
-            public void onClick(View view) {
-                showAlertAddCity("Add city","Type the city you want to add");
-            }
+        fabAddCity.setOnClickListener(view -> {
+            showAlertAddCity("Add city","Type the city you want to add");
         });
 
-        weatherServices = API.getApi().create(WeatherServices.class);
+        swipeRefreshLayout.setColorSchemeResources(R.color.google_blue, R.color.google_green, R.color.google_red, R.color.google_yellow);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            refreshData();
+        });
+        ItemTouchHelper.Callback callback = new ItemTouchHelperCallback((onSwipeListener) adapter);
+        ItemTouchHelper mItemTouchHelper = new ItemTouchHelper(callback);
+        mItemTouchHelper.attachToRecyclerView(recyclerView);
 
     }
+    public void recyclerScrollTo(int pos){
+        recyclerView.scrollToPosition(pos);
+    }
+
+    private void refreshData() {
+        for (int i = 0; i < cities.size(); i++) {
+            updateCity(cities.get(i).getCity().getName(), i);
+            System.out.println("CIUDAD #"+i);
+        }
+        System.out.println("TERMINE EL REFREHS!!!!");
+        swipeRefreshLayout.setRefreshing(false);
+    }
+
     private String cityToAdd ="";
     public void showAlertAddCity(String title, String message){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -129,8 +147,31 @@ public class MainActivity extends AppCompatActivity {
         builder.create().show();
     }
 
+
+    public void updateCity(String cityName, int index){
+        Call<CityWeather> cityWeather = weatherServices.getWeatherCity(cityName, API.KEY, "metric",8);
+        cityWeather.enqueue(new Callback<CityWeather>() {
+            @Override
+            public void onResponse(Call<CityWeather> call, Response<CityWeather> response) {
+                if(response.code()==200){
+                    CityWeather cityWeather = response.body();
+                    cities.remove(index);
+                    cities.add(index,cityWeather);
+                    adapter.notifyItemChanged(index);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CityWeather> call, Throwable t) {
+                Toast.makeText(MainActivity.this,"Sorry, can't refresh right now.",Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+
+
     public void addCity(String cityName){
-        Call<CityWeather> cityWeather = weatherServices.getWeatherCity(cityName, API.KEY, "metric");
+        Call<CityWeather> cityWeather = weatherServices.getWeatherCity(cityName, API.KEY, "metric",8);
         cityWeather.enqueue(new Callback<CityWeather>() {
             @Override
             public void onResponse(Call<CityWeather> call, Response<CityWeather> response) {
@@ -138,14 +179,12 @@ public class MainActivity extends AppCompatActivity {
                     CityWeather cityWeather = response.body();
                     cities.add(cityWeather);
                     adapter.notifyItemInserted(cities.size()-1);
+                    recyclerView.scrollToPosition(cities.size()-1);
+
                 }else{
                     Toast.makeText(MainActivity.this,"Sorry, city not found",Toast.LENGTH_LONG).show();
-
                 }
-
-
             }
-
             @Override
             public void onFailure(Call<CityWeather> call, Throwable t) {
                 Toast.makeText(MainActivity.this,"Sorry, weather services are currently unavailable",Toast.LENGTH_LONG).show();
