@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.martinruiz.myapplication.R;
+import com.example.martinruiz.myapplication.activities.MainActivity;
 import com.example.martinruiz.myapplication.interfaces.onSwipeListener;
 import com.example.martinruiz.myapplication.models.CityWeather;
 import com.squareup.picasso.Picasso;
@@ -29,7 +30,7 @@ public class CityWeatherAdapter extends RecyclerView.Adapter<CityWeatherAdapter.
     private int layoutReference;
     private OnItemClickListener onItemClickListener;
     private Activity activity;
-
+    private View parentView;
     public CityWeatherAdapter(List<CityWeather> cities, int layoutReference,  Activity activity,OnItemClickListener onItemClickListener) {
         this.cities = cities;
         this.layoutReference = layoutReference;
@@ -40,6 +41,7 @@ public class CityWeatherAdapter extends RecyclerView.Adapter<CityWeatherAdapter.
 
     @Override
     public CityWeatherAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        parentView = parent;
         View view = LayoutInflater.from(activity).inflate(layoutReference,parent,false);
         ViewHolder viewHolder = new ViewHolder(view);
         return viewHolder;
@@ -57,9 +59,20 @@ public class CityWeatherAdapter extends RecyclerView.Adapter<CityWeatherAdapter.
 
     @Override
     public void onItemDelete(final int position) {
+        CityWeather tempCity = cities.get(position);
         cities.remove(position);
         notifyItemRemoved(position);
-        System.out.println("DELETEEEEEEE BORRAR");
+
+        Snackbar.make(parentView, "Removed", Snackbar.LENGTH_SHORT)
+                .setAction("Undo", v -> {
+                    addItem(position, tempCity);
+                    //new MainActivity().recyclerScrollTo(position);
+                }).show();
+
+    }
+    public void addItem(int position, CityWeather city) {
+        cities.add(position, city);
+        notifyItemInserted(position);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
