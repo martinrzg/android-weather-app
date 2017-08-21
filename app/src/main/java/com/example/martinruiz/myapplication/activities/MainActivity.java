@@ -1,12 +1,22 @@
 package com.example.martinruiz.myapplication.activities;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.InputType;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.martinruiz.myapplication.API.API;
@@ -31,6 +41,9 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     @BindView(R.id.swipeRefresh) SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.fabAddCity) FloatingActionButton fabAddCity ;
+    private WeatherServices weatherServices;
+
 
 
     @Override
@@ -51,67 +64,91 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
 
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy >0) {
+                    // Scroll Down
+                    if (fabAddCity.isShown()) {
+                        fabAddCity.hide();
+                    }
+                }
+                else if (dy <0) {
+                    // Scroll Up
+                    if (!fabAddCity.isShown()) {
+                        fabAddCity.show();
+                    }
+                }
+            }
+        });
 
+        fabAddCity.setOnClickListener(new View.OnClickListener() {
+            String cityToAdd="";
+            @Override
+            public void onClick(View view) {
+                showAlertAddCity("Add city","Type the city you want to add");
+            }
+        });
 
+        weatherServices = API.getApi().create(WeatherServices.class);
 
-        WeatherServices weatherServices = API.getApi().create(WeatherServices.class);
+    }
+    private String cityToAdd ="";
+    public void showAlertAddCity(String title, String message){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        if(title!=null) builder.setTitle(title);
+        if(message!=null) builder.setMessage(message);
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_add_city,null);
+        builder.setView(view);
+        final TextView editTextAddCityName = view.findViewById(R.id.editTextAddCityName);
+        builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                cityToAdd = editTextAddCityName.getText().toString();
+                addCity(cityToAdd);
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+                Toast.makeText(MainActivity.this,"Cancel",Toast.LENGTH_LONG).show();
+            }
+        });
+        builder.create().show();
+        editTextAddCityName.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 
-        Call<CityWeather> cityWeather = weatherServices.getWeatherCity("Toluca", API.KEY, "metric");
+    }
+
+    public void addCity(String cityName){
+        Call<CityWeather> cityWeather = weatherServices.getWeatherCity(cityName, API.KEY, "metric");
         cityWeather.enqueue(new Callback<CityWeather>() {
             @Override
             public void onResponse(Call<CityWeather> call, Response<CityWeather> response) {
-                CityWeather cityWeather = response.body();
-                cities.add(cityWeather);
-                adapter.notifyItemInserted(cities.size()-1);
-                cities.add(cityWeather);
-                adapter.notifyItemInserted(cities.size()-1);
-                layoutManager.scrollToPosition(cities.size());
+                if(response.code()==200){
+                    CityWeather cityWeather = response.body();
+                    cities.add(cityWeather);
+                    adapter.notifyItemInserted(cities.size()-1);
+                }else{
+                    Toast.makeText(MainActivity.this,"Sorry, city not found",Toast.LENGTH_LONG).show();
+
+                }
+
 
             }
 
             @Override
             public void onFailure(Call<CityWeather> call, Throwable t) {
-                Toast.makeText(MainActivity.this,"Error",Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this,"Sorry, weather services are currently unavailable",Toast.LENGTH_LONG).show();
             }
         });
-        Call<CityWeather> cityWeather2 = weatherServices.getWeatherCity("London", API.KEY, "metric");
-        cityWeather2.enqueue(new Callback<CityWeather>() {
-            @Override
-            public void onResponse(Call<CityWeather> call, Response<CityWeather> response) {
-                CityWeather cityWeather = response.body();
-                cities.add(cityWeather);
-                adapter.notifyItemInserted(cities.size()-1);
-                cities.add(cityWeather);
-                adapter.notifyItemInserted(cities.size()-1);
-                layoutManager.scrollToPosition(cities.size());
-
-            }
-
-            @Override
-            public void onFailure(Call<CityWeather> call, Throwable t) {
-                Toast.makeText(MainActivity.this,"Error",Toast.LENGTH_LONG).show();
-            }
-        });
-        Call<CityWeather> cityWeather3 = weatherServices.getWeatherCity("Singapore", API.KEY, "metric");
-        cityWeather3.enqueue(new Callback<CityWeather>() {
-            @Override
-            public void onResponse(Call<CityWeather> call, Response<CityWeather> response) {
-                CityWeather cityWeather = response.body();
-                cities.add(cityWeather);
-                adapter.notifyItemInserted(cities.size()-1);
-                cities.add(cityWeather);
-                adapter.notifyItemInserted(cities.size()-1);
-                layoutManager.scrollToPosition(cities.size());
-
-            }
-
-            @Override
-            public void onFailure(Call<CityWeather> call, Throwable t) {
-                Toast.makeText(MainActivity.this,"Error",Toast.LENGTH_LONG).show();
-            }
-        });
-
     }
 
     private List<CityWeather> getCities() {
