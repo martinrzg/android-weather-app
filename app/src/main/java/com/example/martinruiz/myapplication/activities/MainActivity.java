@@ -103,28 +103,30 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         if(title!=null) builder.setTitle(title);
         if(message!=null) builder.setMessage(message);
-        View view = LayoutInflater.from(this).inflate(R.layout.dialog_add_city,null);
+        final View view = LayoutInflater.from(this).inflate(R.layout.dialog_add_city,null);
         builder.setView(view);
         final TextView editTextAddCityName = view.findViewById(R.id.editTextAddCityName);
+
+        final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+
         builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 cityToAdd = editTextAddCityName.getText().toString();
                 addCity(cityToAdd);
+                imm.toggleSoftInput(InputMethodManager.HIDE_NOT_ALWAYS,0);
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
+                imm.toggleSoftInput(InputMethodManager.HIDE_NOT_ALWAYS,0);
                 Toast.makeText(MainActivity.this,"Cancel",Toast.LENGTH_LONG).show();
             }
         });
         builder.create().show();
-        editTextAddCityName.requestFocus();
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-
     }
 
     public void addCity(String cityName){
