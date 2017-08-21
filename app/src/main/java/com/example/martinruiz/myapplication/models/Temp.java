@@ -1,6 +1,8 @@
 package com.example.martinruiz.myapplication.models;
 
-public class Temp{
+import java.io.Serializable;
+
+public class Temp implements Serializable{
     private float day,min,max,night,eve,morn;
 
     public float getDay() {

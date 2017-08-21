@@ -1,6 +1,8 @@
 package com.example.martinruiz.myapplication.models;
 
-public class City{
+import java.io.Serializable;
+
+public class City implements Serializable{
     String name;
     String country;
 

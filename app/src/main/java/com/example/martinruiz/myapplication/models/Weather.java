@@ -2,9 +2,10 @@ package com.example.martinruiz.myapplication.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Weather{
+public class Weather implements Serializable{
     @SerializedName("dt")
     private int date;
     private Temp temp;
