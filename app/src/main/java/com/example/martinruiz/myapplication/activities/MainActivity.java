@@ -3,7 +3,9 @@ package com.example.martinruiz.myapplication.activities;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -29,6 +31,7 @@ import com.example.martinruiz.myapplication.interfaces.onSwipeListener;
 import com.example.martinruiz.myapplication.models.CityWeather;
 import com.example.martinruiz.myapplication.utils.ItemTouchHelperCallback;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,7 +71,9 @@ public class MainActivity extends AppCompatActivity {
         adapter = new CityWeatherAdapter(cities, R.layout.weather_card, this, new CityWeatherAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(CityWeather cityWeather, int position) {
-                Toast.makeText(MainActivity.this,cityWeather.getCity().getName(),Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(MainActivity.this,WeatherDetails.class);
+                intent.putExtra("city", (Serializable) cityWeather);
+                startActivity(intent);
             }
         });
         recyclerView.setHasFixedSize(true);
