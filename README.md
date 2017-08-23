@@ -19,7 +19,7 @@
  - Simple and clean 
 
 # Disclaimer 
-- No data persistant was implement, still work in progress 
+- No data persistent was implement, still work in progress 
 - Cities will be lost when you terminate the app process
 
 # Tested 
