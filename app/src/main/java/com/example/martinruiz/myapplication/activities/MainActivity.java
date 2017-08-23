@@ -1,11 +1,14 @@
 package com.example.martinruiz.myapplication.activities;
 
 import android.annotation.SuppressLint;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -16,8 +19,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.InputType;
+import android.transition.Explode;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -54,12 +59,18 @@ public class MainActivity extends AppCompatActivity {
     private MaterialTapTargetPrompt mFabPrompt;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
         ButterKnife.bind(this);
+
+
+
         cities = getCities();
         if(cities.size() == 0){
             showFabPrompt();
@@ -70,10 +81,14 @@ public class MainActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         adapter = new CityWeatherAdapter(cities, R.layout.weather_card, this, new CityWeatherAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(CityWeather cityWeather, int position) {
+            public void onItemClick(CityWeather cityWeather, int position, View clickView) {
                 Intent intent = new Intent(MainActivity.this,WeatherDetails.class);
-                intent.putExtra("city", (Serializable) cityWeather);
-                startActivity(intent);
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
+                        MainActivity.this,clickView,
+                        "weatherCardTransition");
+
+                intent.putExtra("city",  cityWeather);
+                startActivity(intent,options.toBundle());
             }
         });
         recyclerView.setHasFixedSize(true);
@@ -189,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void updateCity(String cityName, int index){
-        Call<CityWeather> cityWeather = weatherServices.getWeatherCity(cityName, API.KEY, "metric",8);
+        Call<CityWeather> cityWeather = weatherServices.getWeatherCity(cityName, API.KEY, "metric",6);
         cityWeather.enqueue(new Callback<CityWeather>() {
             @Override
             public void onResponse(Call<CityWeather> call, Response<CityWeather> response) {
@@ -211,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void addCity(String cityName){
-        Call<CityWeather> cityWeather = weatherServices.getWeatherCity(cityName, API.KEY, "metric",8);
+        Call<CityWeather> cityWeather = weatherServices.getWeatherCity(cityName, API.KEY, "metric",6);
         cityWeather.enqueue(new Callback<CityWeather>() {
             @Override
             public void onResponse(Call<CityWeather> call, Response<CityWeather> response) {
