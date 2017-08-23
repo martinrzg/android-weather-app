@@ -98,17 +98,18 @@ public class CityWeatherAdapter extends RecyclerView.Adapter<CityWeatherAdapter.
             textViewMinTemp.setText((int) cityWeather.getWeeklyWeather().get(0).getTemp().getMin()+"°");
             String weatherDescription = cityWeather.getWeeklyWeather().get(0).getWeatherDetails().get(0).getShotDescription();
             Picasso.with(activity).load(IconProvider.getImageIcon(weatherDescription)).into(imageViewWeatherIcon);
+
             cardViewWeather.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    onItemClickListener.onItemClick(cityWeather,getAdapterPosition());
+                    onItemClickListener.onItemClick(cityWeather,getAdapterPosition(), cardViewWeather);
                 }
             });
         }
     }
 
     public interface OnItemClickListener {
-        void onItemClick(CityWeather cityWeather , int position);
+        void onItemClick(CityWeather cityWeather , int position, View view);
     }
 
 }
