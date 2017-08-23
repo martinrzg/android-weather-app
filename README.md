@@ -2,7 +2,7 @@
 > A simple weather android app inspired in material design
 
 
-![Sample image](img/screener_1503490999452.png)
+![Sample image](img/screener_1503490999452.png) ![Sample image 2](img/screener_1503491219711.png)
 
 # Requirements
  - Android 5.0 (API 21) or above 
