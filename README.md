@@ -8,7 +8,7 @@
  - Android 5.0 (API 21) or above 
  - Build with Android Studio 3.0 Beta 2
  
- #Features
+# Features
  - Material Design
  - Add your favorites cities 
  - Android Cards
@@ -18,11 +18,11 @@
  - Some meaningful animations
  - Simple and clean 
 
-#Disclaimer 
+# Disclaimer 
 - No data persistant was implement, still work in progress 
 - Cities will be lost when you terminate the app process
 
-#Tested 
+# Tested 
 - Nexus 6P running Android O 8.0 stock
 
 ## Built With
