@@ -1,9 +1,6 @@
 # android-weather-app
-A simple weather android app inspired in material design
+> A simple weather android app inspired in material design
 
-
-# Material Weather App
-> Weather Android app
 
 ![Sample image](public/sample.PNG)
 
