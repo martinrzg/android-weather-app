@@ -12,7 +12,7 @@
     card_view:cardCornerRadius="4dp"
     android:foreground="?attr/selectableItemBackground"
     app:cardElevation="2dp"
-
+    android:transitionName="weatherCardTransition"
     >
 
     <android.support.constraint.ConstraintLayout
